@@ -1,5 +1,5 @@
-import AnamneseForm from './forms/anamneseForm'
 import './App.css'
+import AnamneseForm from './forms/AnamneseForm.tsx'
 
 function App() {
   
