@@ -1,5 +1,7 @@
 export interface IAnamneseForm {
-  _id: string;
+  _id: {
+    $oid: string;
+  };
   data: string;
   nome: string;
   endereco: string;
