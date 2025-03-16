@@ -15,6 +15,23 @@ const Container = styled.div`
   background-color:hsl(330, 100.00%, 98.40%);
   min-height: 100vh;
   height: auto;
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #f5d0e3;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #e8b8d1;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: #f9f9f9;
+  }
 `;
 
 const Header = styled.header`
@@ -40,6 +57,14 @@ const Logo = styled.img`
     align-self: center;
     margin: 20px 0px 20px 0px;
   }
+`;
+
+const Divider = styled.hr`
+  width: 100%;
+  border: none;
+  border-top: 2px solid #D4AF27; 
+  margin: 15px 0;
+  width: 90vw;
 `;
 
 const Input = styled.input`
@@ -153,7 +178,7 @@ function Search () {
   };
 
   const handleViewRecord = (id: string) => {
-    navigate(`/forms/AnamneseForm/${id}`);
+    navigate(`/AnamneseForm/${id}`);
   };
 
   if (isLoading) {
@@ -169,6 +194,9 @@ function Search () {
           />
           <Button onClick={handleFilter}>Filtrar</Button>
         </Header>
+
+        <Divider />
+
         <img src="https://i.gifer.com/ZZ5H.gif" alt="Carregando..." style={{ width: '100px', height: '100px' }} />
       </Container>
     );
@@ -186,6 +214,9 @@ function Search () {
         />
         <Button onClick={handleFilter}>Filtrar</Button>
       </Header>
+      
+      <Divider />
+
       <ListContainer>
         <Table>
           <thead>
@@ -197,11 +228,11 @@ function Search () {
           </thead>
           <tbody>
             {anamneseForms.map((form, index) => (
-              <TableRow key={form._id} isOdd={index % 2 === 0}>
+              <TableRow key={form._id.$oid} isOdd={index % 2 === 0}>
                 <TableCell>{form.nome}</TableCell>
                 <TableCell>{new Date(form.data).toLocaleDateString()}</TableCell>
                 <TableCell>
-                    <ActionButton onClick={() => handleViewRecord(form._id)}>
+                    <ActionButton onClick={() => handleViewRecord(form._id.$oid)}>
                     Visualizar
                     </ActionButton> 
                 </TableCell>
