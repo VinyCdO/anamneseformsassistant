@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import businessLogo from '../../assets/AliceRibeiroLogo.png'
 import { getAnamneseForms, getAnamneseFormByName } from '../../services/anamneseApi'; 
 import { IAnamneseForm } from '../../interfaces/IAnamneseForm';
+import { set } from 'mongoose';
 
 const Container = styled.div`
   display: flex;
@@ -12,7 +13,7 @@ const Container = styled.div`
   justify-content: flex-start;
   height: 100vh;
   width: 100vw;
-  background-color:rgb(255, 247, 251);
+  background-color:hsl(330, 100.00%, 98.40%);
   min-height: 100vh;
   height: auto;
 `;
@@ -24,11 +25,22 @@ const Header = styled.header`
   padding: 0px 10px 0 10px;    
   height: 100px;
   width: 90vw;    
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    height: auto;
+  }  
 `;
 
 const Logo = styled.img`
   border-radius: 50%;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);    
+
+  @media (max-width: 768px) {
+    display: block;    
+    align-self: center;
+    margin: 20px 0px 20px 0px;
+  }
 `;
 
 const Input = styled.input`
@@ -36,7 +48,7 @@ const Input = styled.input`
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  width: 70%;
+  width: max(30%, 300px);
   background-color: #fff;
   color: rgba(43, 41, 37, 0.56);
 `;
@@ -44,14 +56,18 @@ const Input = styled.input`
 const Button = styled.button`
   padding: 10px 20px;
   font-size: 16px;
-  background-color: #D4AF27;
+  background-color:rgb(207, 189, 121);
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 
   &:hover {
-    background-color:rgb(85, 80, 62);
+    background-color:rgb(228, 181, 13);
+  }
+    
+  @media (max-width: 768px) {
+    margin: 10px;
   }
 `;
 
@@ -92,47 +108,72 @@ const TableCell = styled.td`
 const ActionButton = styled.button`
   padding: 5px 10px;
   font-size: 14px;
-  background-color: #D4AF27;
+  background-color: rgb(207, 189, 121);
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 
   &:hover {
-    background-color: rgb(85, 80, 62);
+    background-color: rgb(228, 181, 13);
   }
 `;
 
 function Search () {
   const [searchTerm, setSearchTerm] = useState('');
   const [anamneseForms, setAnamneseForms] = useState<IAnamneseForm[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getAnamneseForms();
-      setAnamneseForms(data);
+      setIsLoading(true);
+      try {
+        const data = await getAnamneseForms();
+        setAnamneseForms(data);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchData();
-
-    console.log(anamneseForms)
   }, []);
 
-  const handleFilter = () => {
+  const handleFilter = () => {    
     const fetchData = async () => {
-      const data = await getAnamneseFormByName(searchTerm);
-      setAnamneseForms(data);
+      setIsLoading(true);
+      try {
+        const data = await getAnamneseFormByName(searchTerm);
+        setAnamneseForms(data);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchData();      
-
-    console.log(anamneseForms)
   };
 
   const handleViewRecord = (id: string) => {
     navigate(`/forms/AnamneseForm/${id}`);
   };
+
+  if (isLoading) {
+    return (      
+      <Container>
+        <Header>
+          <Logo src={businessLogo} alt="Alice Ribeiro Estética" />
+          <Input
+            type="text"
+            placeholder="Digite o nome para pesquisa"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <Button onClick={handleFilter}>Filtrar</Button>
+        </Header>
+        <img src="https://i.gifer.com/ZZ5H.gif" alt="Carregando..." style={{ width: '100px', height: '100px' }} />
+      </Container>
+    );
+  }
 
   return (
     <Container>
