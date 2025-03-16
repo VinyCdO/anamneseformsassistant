@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import businessLogo from '../../assets/AliceRibeiroLogo.png'
 import { getAnamneseForms, getAnamneseFormByName } from '../../services/anamneseApi'; 
 import { IAnamneseForm } from '../../interfaces/IAnamneseForm';
-import { set } from 'mongoose';
 
 const Container = styled.div`
   display: flex;
