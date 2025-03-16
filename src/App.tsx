@@ -1,12 +1,13 @@
 import './App.css'
-import AnamneseForm from './forms/AnamneseForm.tsx'
+import AppRoutes from './routes/index.tsx';
+import { BrowserRouter } from 'react-router-dom';
 
 function App() {
   
   return (
-    <div>
-      <AnamneseForm />      
-    </div>
+    <BrowserRouter basename='/'>
+      <AppRoutes />      
+    </BrowserRouter>
   )
 }
 

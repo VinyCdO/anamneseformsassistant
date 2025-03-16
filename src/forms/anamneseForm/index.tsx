@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import businessLogo from '../assets/AliceRibeiroLogo.png'
+import businessLogo from '../../assets/AliceRibeiroLogo.png'
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -10,7 +10,7 @@ const Container = styled.div`
   height: 100vh;
   width: 100vw;
   background-color:rgb(255, 247, 251);
-  min-height: 100vh;
+  min-height: 100%;
   height: auto;
 `;
 
@@ -184,7 +184,7 @@ function AnamneseForm() {
     <>
     <Container>
       <Header>
-        <Logo src={businessLogo} alt="Alice Ribeiro Estética" />
+        <Logo src={businessLogo} alt="Logo Alice Ribeiro Estética" />
         <Title>FICHA DE ANAMNESE</Title>
       </Header>
       

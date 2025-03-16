@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const anamneseApiPost = process.env.AZURE_FUNCTION_ANAMNESE_API_POST;
-const anamneseApiGet  = process.env.AZURE_FUNCTION_ANAMNESE_API_GET;;
+const anamneseApiPost = import.meta.env.VITE_AZURE_FUNCTION_ANAMNESE_API_POST;
+const anamneseApiGet  = import.meta.env.VITE_AZURE_FUNCTION_ANAMNESE_API_GET;
 
 export const postAnamneseForm = async (anamneseForm) => {
   try {
@@ -14,7 +14,9 @@ export const postAnamneseForm = async (anamneseForm) => {
 
 export const getAnamneseForms = async () => {
   try {
+    console.log(anamneseApiGet);  
     const response = await axios.get(anamneseApiGet);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(error);
