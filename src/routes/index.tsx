@@ -6,8 +6,9 @@ const AppRoutes = () => {
   
   return (
     <Routes>
-      <Route path='/search' element={<Search />} />
+      <Route path='/' element={<Search />} />
       <Route path='/anamneseForm' element={<AnamneseForm />} />        
+      <Route path='/anamneseForm/:id' element={<AnamneseForm />} />        
     </Routes>
   );
 }
