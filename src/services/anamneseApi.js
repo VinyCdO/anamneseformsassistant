@@ -14,9 +14,7 @@ export const postAnamneseForm = async (anamneseForm) => {
 
 export const getAnamneseForms = async () => {
   try {
-    console.log(anamneseApiGet);  
     const response = await axios.get(anamneseApiGet);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(error);
