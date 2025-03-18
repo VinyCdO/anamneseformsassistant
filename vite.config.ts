@@ -4,8 +4,9 @@ import react from '@vitejs/plugin-react-swc'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/', // exemplo de base
+  base: '/',
   build: {
-    outDir: 'build', // exemplo de diretório de saida
+    outDir: 'build', 
+    chunkSizeWarningLimit: 1000, 
   },
 })
