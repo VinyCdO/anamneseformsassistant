@@ -22,8 +22,15 @@ jobs:
 
       - name: Set Environment Variables
         run: |
-          echo "VITE_AZURE_FUNCTION_ANAMNESE_API_GET=${{ secrets.VITE_AZURE_FUNCTION_ANAMNESE_API_GET }}" >> $GITHUB_ENV
-          echo "VITE_AZURE_FUNCTION_ANAMNESE_API_POST=${{ secrets.VITE_AZURE_FUNCTION_ANAMNESE_API_POST }}" >> $GITHUB_ENV
+          echo "VITE_ENDPOINT_GET=${{ secrets.VITE_ENDPOINT_GET }}" >> $GITHUB_ENV
+          echo "VITE_ENDPOINT_POST=${{ secrets.VITE_ENDPOINT_POST }}" >> $GITHUB_ENV
+          echo "VITE_ENDPOINT_PUT_SIGNED_FILE_LINK=${{ secrets.VITE_ENDPOINT_PUT_SIGNED_FILE_LINK }}" >> $GITHUB_ENV
+          echo "VITE_ENDPOINT_DELETE=${{ secrets.VITE_ENDPOINT_DELETE }}" >> $GITHUB_ENV
+          echo "VITE_CODE_AZURE_FUNCTION_POST=${{ secrets.VITE_CODE_AZURE_FUNCTION_POST }}" >> $GITHUB_ENV
+          echo "VITE_CODE_AZURE_FUNCTION_GET=${{ secrets.VITE_CODE_AZURE_FUNCTION_GET }}" >> $GITHUB_ENV
+          echo "VITE_CODE_AZURE_FUNCTION_PUT_SIGNED_FILE_LINK=${{ secrets.VITE_CODE_AZURE_FUNCTION_PUT_SIGNED_FILE_LINK }}" >> $GITHUB_ENV
+          echo "VITE_CODE_AZURE_FUNCTION_DELETE=${{ secrets.VITE_CODE_AZURE_FUNCTION_DELETE }}" >> $GITHUB_ENV
+
 
       - name: Build And Deploy
         id: builddeploy
