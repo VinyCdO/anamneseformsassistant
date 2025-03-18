@@ -28,7 +28,7 @@ const Header = styled.header`
 `;
 
 const Logo = styled.img`
-  border-radius: 50%;
+  border-radius: 30%;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);    
   cursor: pointer;
 `;
