@@ -2,8 +2,13 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import businessLogo from '../../assets/AliceRibeiroLogo.png'
-import { getAnamneseForms, getAnamneseFormByName } from '../../services/anamneseApi'; 
+import { getAnamneseForms, getAnamneseFormByName, deleteAnamneseFormById } from '../../services/anamneseApi'; 
 import { IAnamneseForm } from '../../interfaces/IAnamneseForm';
+import { FcSearch, FcDownload } from "react-icons/fc";
+import { IoIosAttach } from "react-icons/io";
+import { AiTwotoneDelete } from "react-icons/ai";
+import ModalAddForm from '../../forms/ModalAddForm';
+import { format } from 'date-fns';
 
 const Container = styled.div`
   display: flex;
@@ -49,7 +54,7 @@ const Header = styled.header`
 `;
 
 const Logo = styled.img`
-  border-radius: 50%;
+  border-radius: 30%;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);    
 
   @media (max-width: 768px) {
@@ -129,17 +134,27 @@ const TableCell = styled.td`
   border: 1px solid #ccc;
 `;
 
-const ActionButton = styled.button`
-  padding: 5px 10px;
-  font-size: 14px;
-  background-color: rgb(207, 189, 121);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+const TableCellActions = styled.td`
+  padding: 10px;
+  border: 1px solid #ccc;
+  width: 1%;
+  white-space: nowrap;
+  text-align: center;
+`;
 
-  &:hover {
-    background-color: rgb(228, 181, 13);
+const ActionButton = styled.button`
+  padding: 5px 5px;
+  border: none;
+  border-radius: 30%;
+  cursor: pointer;
+  background-color: transparent;
+  color: #aaa;
+  &:hover {    
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);    
+  }
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
   }
 `;
 
@@ -148,6 +163,8 @@ function Search () {
   const [anamneseForms, setAnamneseForms] = useState<IAnamneseForm[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -181,6 +198,38 @@ function Search () {
     navigate(`/AnamneseForm/${id}`);
   };
 
+  const handleDownload = (link: string) => {
+    const a = document.createElement('a');
+    a.href = link;
+    a.target = '_blank';
+    a.download = 'formulario_assinado';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  const handleDelete = async (id: string) => {
+    try {        
+      await deleteAnamneseFormById(id);      
+      handleFilter();
+      // setModalMessage('Link da Ficha de Anamnese assinada, foi adicionado com sucesso.');
+      // setShowModal(true);
+    } catch(error) {        
+      // setModalMessage('Houve alguma falha ao adicionar o link, tente novamente mais tarde.');
+      // setShowModal(true);
+    }    
+  }
+
+  const handleOpenModal = (id: string) => {
+    setSelectedFormId(id); 
+    setModalVisible(true); 
+  };
+
+  const handleCloseModal = () => {
+    setSelectedFormId(null); 
+    setModalVisible(false); 
+  };
+
   if (isLoading) {
     return (      
       <Container>
@@ -200,7 +249,7 @@ function Search () {
         <img src="https://i.gifer.com/ZZ5H.gif" alt="Carregando..." style={{ width: '100px', height: '100px' }} />
       </Container>
     );
-  }
+  }  
 
   return (
     <Container>
@@ -230,17 +279,39 @@ function Search () {
             {anamneseForms.map((form, index) => (
               <TableRow key={form._id.$oid} isOdd={index % 2 === 0}>
                 <TableCell>{form.nome}</TableCell>
-                <TableCell>{new Date(form.data).toLocaleDateString()}</TableCell>
-                <TableCell>
+                <TableCell>{format(new Date(form.data), 'dd/MM/yyyy')}</TableCell>
+                <TableCellActions>
                     <ActionButton onClick={() => handleViewRecord(form._id.$oid)}>
-                    Visualizar
+                      <FcSearch size={16} />
                     </ActionButton> 
-                </TableCell>
+                    <ActionButton onClick={() => handleOpenModal(form._id.$oid)}>
+                      <IoIosAttach size={16} />
+                    </ActionButton>                                   
+                    <ActionButton 
+                      onClick={() => handleDownload(form.formularioAssinado)} 
+                      disabled={!form.formularioAssinado}
+                    >
+                      <FcDownload size={16} />
+                    </ActionButton> 
+                    <ActionButton onClick={() => handleDelete(form._id.$oid)}>
+                      <AiTwotoneDelete size={16} />
+                    </ActionButton>
+                </TableCellActions>
               </TableRow> 
             ))}
           </tbody>
         </Table>
       </ListContainer>
+
+      {modalVisible && selectedFormId && (
+        <ModalAddForm
+          formId={selectedFormId}
+          visible={modalVisible}
+          onClose={handleCloseModal}
+          onSave={handleCloseModal}
+        />
+      )}
+
     </Container>
   );
 };

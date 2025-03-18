@@ -31,4 +31,5 @@ export interface IAnamneseForm {
   alteracoesCardiacas: boolean;
   pressaoAlta: boolean;
   diabetes: boolean;
+  formularioAssinado: string;
 }
