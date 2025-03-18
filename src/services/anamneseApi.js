@@ -1,11 +1,10 @@
 import axios from 'axios';
 
-const apiPost = import.meta.env.VITE_ENDPOINT_POST + import.meta.env.VITE_CODE_AZURE_FUNCTION_POST;
-const apiGet  = import.meta.env.VITE_ENDPOINT_GET + import.meta.env.VITE_CODE_AZURE_FUNCTION_GET;
+const apiPost = import.meta.env.VITE_ENDPOINT_POST + import.meta.env.VITE_AZURE_FUNCTION_CODE;
+const apiGet  = import.meta.env.VITE_ENDPOINT_GET + import.meta.env.VITE_AZURE_FUNCTION_CODE;
 const apiPutSignedFileLink = import.meta.env.VITE_ENDPOINT_PUT_SIGNED_FILE_LINK;
-const apiCodePutSignedFileLink = import.meta.env.VITE_CODE_AZURE_FUNCTION_PUT_SIGNED_FILE_LINK;
 const apiDelete = import.meta.env.VITE_ENDPOINT_DELETE;
-const apiCodeDelete = import.meta.env.VITE_CODE_AZURE_FUNCTION_DELETE;
+const apiAzureFunctionCode = import.meta.env.VITE_AZURE_FUNCTION_CODE;
 
 export const postAnamneseForm = async (anamneseForm) => {
   try {
@@ -45,7 +44,7 @@ export const getAnamneseFormByName = async (name) => {
 
 export const putAddSignedFileLink = async (id, anamneseForm) => {
   try {
-    const response = await axios.put(apiPutSignedFileLink + `/${id}` + apiCodePutSignedFileLink, anamneseForm);
+    const response = await axios.put(apiPutSignedFileLink + `/${id}` + apiAzureFunctionCode, anamneseForm);
     
     if (response.status != 200) {
       throw error('Falha ao adicionar link do documento assinado');
@@ -59,7 +58,7 @@ export const putAddSignedFileLink = async (id, anamneseForm) => {
 
 export const deleteAnamneseFormById = async (id) => {
   try {
-    const response = await axios.delete(apiDelete + `/${id}` + apiCodeDelete);
+    const response = await axios.delete(apiDelete + `/${id}` + apiAzureFunctionCode);
     return response.data;
   } catch (error) {
     console.error(error);

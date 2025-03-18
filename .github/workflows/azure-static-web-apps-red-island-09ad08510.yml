@@ -26,12 +26,8 @@ jobs:
           echo "VITE_ENDPOINT_POST=${{ secrets.VITE_ENDPOINT_POST }}" >> $GITHUB_ENV
           echo "VITE_ENDPOINT_PUT_SIGNED_FILE_LINK=${{ secrets.VITE_ENDPOINT_PUT_SIGNED_FILE_LINK }}" >> $GITHUB_ENV
           echo "VITE_ENDPOINT_DELETE=${{ secrets.VITE_ENDPOINT_DELETE }}" >> $GITHUB_ENV
-          echo "VITE_CODE_AZURE_FUNCTION_POST=${{ secrets.VITE_CODE_AZURE_FUNCTION_POST }}" >> $GITHUB_ENV
-          echo "VITE_CODE_AZURE_FUNCTION_GET=${{ secrets.VITE_CODE_AZURE_FUNCTION_GET }}" >> $GITHUB_ENV
-          echo "VITE_CODE_AZURE_FUNCTION_PUT_SIGNED_FILE_LINK=${{ secrets.VITE_CODE_AZURE_FUNCTION_PUT_SIGNED_FILE_LINK }}" >> $GITHUB_ENV
-          echo "VITE_CODE_AZURE_FUNCTION_DELETE=${{ secrets.VITE_CODE_AZURE_FUNCTION_DELETE }}" >> $GITHUB_ENV
-
-
+          echo "VITE_AZURE_FUNCTION_CODE=${{ secrets.VITE_AZURE_FUNCTION_CODE }}" >> $GITHUB_ENV
+          
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
