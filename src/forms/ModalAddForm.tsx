@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Button, Input, Form } from 'antd';
 import styled from 'styled-components';
 import { putAddSignedFileLink } from '../services/anamneseApi';
-import ModalAlerta from '../components/modalAlerta/index.tsx';
+import ModalAlert from '../components/modalAlert/index.tsx';
 
 const Container = styled.div`
   display: flex;
@@ -11,6 +11,41 @@ const Container = styled.div`
   justify-content: center;
   height: 100vh;
   background-color: transparent;
+`;
+
+const SaveButton = styled.button`
+  font-size: 14px;
+  background-color: rgb(207, 189, 121);
+  color: white;
+  border: none;
+  border-radius: 10%;
+  cursor: pointer;
+  margin-left: 10px;
+
+  &:hover {
+    background-color: rgb(228, 181, 13);
+  }
+    
+  @media (max-width: 768px) {
+    margin-top: 20px;
+  }
+`;
+
+const CancelButton = styled.button`
+  font-size: 14px;
+  background-color: #a0a08d;
+  color: white;
+  border: none;
+  border-radius: 10%;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: rgb(97, 96, 90);
+  }
+    
+  @media (max-width: 768px) {
+    margin-top: 20px;
+  }
 `;
 
 interface ModalAddFormProps {
@@ -30,7 +65,7 @@ const ModalAddForm: React.FC<ModalAddFormProps> = ({ visible, onClose, onSave, f
       try {        
         await putAddSignedFileLink(formId, `{ "formularioAssinado": "${link}" }`);      
         
-        setModalMessage('Link da Ficha de Anamnese assinada, foi adicionado com sucesso.');
+        setModalMessage('Link para download adicionado com sucesso.');
         setShowModal(true);
       } catch(error) {        
         setModalMessage('Houve alguma falha ao adicionar o link, tente novamente mais tarde.');
@@ -49,16 +84,15 @@ const ModalAddForm: React.FC<ModalAddFormProps> = ({ visible, onClose, onSave, f
   return (
     <Container>
       <Modal
-        title="Adicionar link para download"
         visible={visible}
         onCancel={onClose}
         footer={[
-          <Button key="cancel" onClick={onClose}>
+          <CancelButton key="cancel" onClick={onClose}>
             Cancelar
-          </Button>,
-          <Button key="save" type="primary" onClick={handleSave}>
+          </CancelButton>,
+          <SaveButton key="save" onClick={handleSave}>
             Salvar
-          </Button>,
+          </SaveButton>,
         ]}
         centered
         width={400}
@@ -73,8 +107,7 @@ const ModalAddForm: React.FC<ModalAddFormProps> = ({ visible, onClose, onSave, f
           </Form.Item>
         </Form>
         {showModal && (
-          <ModalAlerta
-            titulo="Mensagem"
+          <ModalAlert
             mensagem={modalMessage}
             onClose={closeModal}
           />

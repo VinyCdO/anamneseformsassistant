@@ -86,6 +86,10 @@ const FormLineFourColumns = styled.div`
   justify-content: space-between;
   width: 90vw;
   margin: 10px 0;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;    
 
 const FormLineFiveColumns = styled.div`
@@ -96,6 +100,10 @@ const FormLineFiveColumns = styled.div`
   justify-content: space-between;
   width: 90vw;
   margin: 10px 0;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;    
 
 const FormLineTwoColumns = styled.div`
@@ -106,6 +114,11 @@ const FormLineTwoColumns = styled.div`
   justify-content: space-between;
   width: 90vw;
   margin: 10px 0;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    
+  }
 `;   
 
 const FormColumn = styled.div`
