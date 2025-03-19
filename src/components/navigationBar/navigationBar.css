@@ -1,0 +1,53 @@
+.barraNavegacao {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100vw;
+  background-color: #f5d0e3;
+  padding: 10px;  
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);  
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
+}
+
+
+.buttonMenuLateral {
+  background-color: #e8b8d1;
+  border: none;
+  padding: 10px;  
+  margin: 0px 25px 0px 25px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.buttonMenuLateral:hover {
+  cursor: pointer;
+  background-color: #f5d0e3;
+}
+
+.mainContainer {
+  display: flex;
+  position: absolute;
+}
+
+.mainContent {
+  flex-grow: 1;
+  padding: 20px;
+  margin-left: 20px;
+  transition: margin-left 0.3s;
+}
+
+.rotaBase {
+  color: #052f5f;
+}
+
+.rotaAtual {
+  color: #858585;
+}
+

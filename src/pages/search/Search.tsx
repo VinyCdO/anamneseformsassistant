@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import businessLogo from '../../assets/AliceRibeiroLogo.png'
 import { getAnamneseForms, getAnamneseFormByName, deleteAnamneseFormById } from '../../services/anamneseApi'; 
 import { IAnamneseForm } from '../../interfaces/IAnamneseForm';
 import { FcSearch, FcDownload } from "react-icons/fc";
@@ -9,6 +8,7 @@ import { IoIosAttach } from "react-icons/io";
 import { AiTwotoneDelete } from "react-icons/ai";
 import ModalAddForm from '../../forms/ModalAddForm';
 import { format } from 'date-fns';
+import NavigationBar from '../../components/navigationBar/index.tsx';
 
 const Container = styled.div`
   display: flex;
@@ -42,26 +42,18 @@ const Container = styled.div`
 const Header = styled.header`
   display: flex;
   align-items: center;
-  justify-content: space-between;    
-  padding: 0px 10px 0 10px;    
-  height: 100px;
+  justify-content: flex-start;    
+  padding: 30px 10px 10px 10px;    
+  height: min-content;
   width: 90vw;    
+  gap: 20px;
 
   @media (max-width: 768px) {
     flex-direction: column;
     height: auto;
+    padding: 0px 10px 10px 10px;  
+    gap: 0px;
   }  
-`;
-
-const Logo = styled.img`
-  border-radius: 30%;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);    
-
-  @media (max-width: 768px) {
-    display: block;    
-    align-self: center;
-    margin: 20px 0px 20px 0px;
-  }
 `;
 
 const Divider = styled.hr`
@@ -80,6 +72,10 @@ const Input = styled.input`
   width: max(30%, 300px);
   background-color: #fff;
   color: rgba(43, 41, 37, 0.56);
+
+  @media (max-width: 768px) {
+    margin-top: 20px;
+  }
 `;
 
 const Button = styled.button`
@@ -96,7 +92,7 @@ const Button = styled.button`
   }
     
   @media (max-width: 768px) {
-    margin: 10px;
+    margin-top: 20px;
   }
 `;
 
@@ -165,6 +161,7 @@ function Search () {
   const navigate = useNavigate();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
+  const [expandido, setExpandido] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -228,13 +225,18 @@ function Search () {
   const handleCloseModal = () => {
     setSelectedFormId(null); 
     setModalVisible(false); 
+    handleFilter();
+  };
+
+  const toggleMenu = () => {
+    setExpandido(!expandido);
   };
 
   if (isLoading) {
     return (      
       <Container>
+        <NavigationBar toggleMenu={toggleMenu} />
         <Header>
-          <Logo src={businessLogo} alt="Alice Ribeiro Estética" />
           <Input
             type="text"
             placeholder="Digite o nome para pesquisa"
@@ -253,8 +255,8 @@ function Search () {
 
   return (
     <Container>
+      <NavigationBar toggleMenu={toggleMenu} />
       <Header>
-        <Logo src={businessLogo} alt="Alice Ribeiro Estética" />
         <Input
           type="text"
           placeholder="Digite o nome para pesquisa"
