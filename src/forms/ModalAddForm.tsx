@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Button, Input, Form } from 'antd';
+import { Modal, Input, Form } from 'antd';
 import styled from 'styled-components';
 import { putAddSignedFileLink } from '../services/anamneseApi';
 import ModalAlert from '../components/modalAlert/index.tsx';

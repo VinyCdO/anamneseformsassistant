@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import businessLogo from '../../assets/AliceRibeiroLogo.png'
 import { getAnamneseForms, getAnamneseFormByName, deleteAnamneseFormById } from '../../services/anamneseApi'; 
 import { IAnamneseForm } from '../../interfaces/IAnamneseForm';
 import { FcSearch, FcDownload } from "react-icons/fc";
@@ -8,7 +9,6 @@ import { IoIosAttach } from "react-icons/io";
 import { AiTwotoneDelete } from "react-icons/ai";
 import ModalAddForm from '../../forms/ModalAddForm';
 import { format } from 'date-fns';
-import NavigationBar from '../../components/navigationBar/index.tsx';
 
 const Container = styled.div`
   display: flex;
@@ -42,18 +42,21 @@ const Container = styled.div`
 const Header = styled.header`
   display: flex;
   align-items: center;
-  justify-content: flex-start;    
-  padding: 30px 10px 10px 10px;    
+  justify-content: space-between;    
+  padding: 20px 10px 10px 10px;    
   height: min-content;
   width: 90vw;    
-  gap: 20px;
 
   @media (max-width: 768px) {
     flex-direction: column;
     height: auto;
-    padding: 0px 10px 10px 10px;  
-    gap: 0px;
+    gap: 5px;
   }  
+`;
+
+const Logo = styled.img`
+  border-radius: 30%;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);    
 `;
 
 const Divider = styled.hr`
@@ -161,8 +164,7 @@ function Search () {
   const navigate = useNavigate();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
-  const [expandido, setExpandido] = useState(false);
-
+  
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -208,12 +210,9 @@ function Search () {
   const handleDelete = async (id: string) => {
     try {        
       await deleteAnamneseFormById(id);      
-      handleFilter();
-      // setModalMessage('Link da Ficha de Anamnese assinada, foi adicionado com sucesso.');
-      // setShowModal(true);
+      handleFilter();      
     } catch(error) {        
-      // setModalMessage('Houve alguma falha ao adicionar o link, tente novamente mais tarde.');
-      // setShowModal(true);
+      console.error(error);
     }    
   }
 
@@ -227,16 +226,15 @@ function Search () {
     setModalVisible(false); 
     handleFilter();
   };
-
-  const toggleMenu = () => {
-    setExpandido(!expandido);
-  };
-
+  
   if (isLoading) {
     return (      
       <Container>
-        <NavigationBar toggleMenu={toggleMenu} />
         <Header>
+          <Logo
+            src={businessLogo}
+            alt="Logo Alice Ribeiro Estética"
+          />
           <Input
             type="text"
             placeholder="Digite o nome para pesquisa"
@@ -255,8 +253,11 @@ function Search () {
 
   return (
     <Container>
-      <NavigationBar toggleMenu={toggleMenu} />
       <Header>
+        <Logo
+          src={businessLogo}
+          alt="Logo Alice Ribeiro Estética"
+        />
         <Input
           type="text"
           placeholder="Digite o nome para pesquisa"
