@@ -8,7 +8,6 @@ import { FcSearch, FcDownload } from "react-icons/fc";
 import { IoIosAttach } from "react-icons/io";
 import { AiTwotoneDelete } from "react-icons/ai";
 import ModalAddForm from '../../forms/ModalAddForm';
-import { format } from 'date-fns';
 
 const Container = styled.div`
   display: flex;
@@ -234,14 +233,17 @@ function Search () {
           <Logo
             src={businessLogo}
             alt="Logo Alice Ribeiro Estética"
-          />
+          />          
           <Input
             type="text"
             placeholder="Digite o nome para pesquisa"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <Button onClick={handleFilter}>Filtrar</Button>
+          <div>
+            <Button onClick={handleFilter}>Filtrar</Button>
+            <Button onClick={handleNavAnamneseForm} style={{ marginLeft: '20px', backgroundColor: '#e8b8d1' }}>Nova</Button>
+          </div>
         </Header>
 
         <Divider />
@@ -250,6 +252,10 @@ function Search () {
       </Container>
     );
   }  
+
+  function handleNavAnamneseForm(): void {
+    navigate('/AnamneseForm');
+  }
 
   return (
     <Container>
@@ -264,7 +270,10 @@ function Search () {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <Button onClick={handleFilter}>Filtrar</Button>
+        <div>
+          <Button onClick={handleFilter}>Filtrar</Button>
+          <Button onClick={handleNavAnamneseForm} style={{ marginLeft: '20px', backgroundColor: '#e8b8d1' }}>Nova</Button>
+        </div>
       </Header>
       
       <Divider />
@@ -282,7 +291,7 @@ function Search () {
             {anamneseForms.map((form, index) => (
               <TableRow key={form._id.$oid} isOdd={index % 2 === 0}>
                 <TableCell>{form.nome}</TableCell>
-                <TableCell>{format(new Date(form.data), 'dd/MM/yyyy')}</TableCell>
+                <TableCell>{form.data}</TableCell>
                 <TableCellActions>
                     <ActionButton onClick={() => handleViewRecord(form._id.$oid)}>
                       <FcSearch size={16} />
