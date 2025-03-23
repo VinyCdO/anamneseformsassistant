@@ -61,3 +61,7 @@
 .ok-button:hover {
   background-color: rgb(228, 181, 13);
 }
+
+.modal-body p {
+  color: rgba(12, 11, 11, 0.733); ;
+}
