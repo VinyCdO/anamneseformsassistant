@@ -291,7 +291,7 @@ function Search () {
             {anamneseForms.map((form, index) => (
               <TableRow key={form._id.$oid} isOdd={index % 2 === 0}>
                 <TableCell>{form.nome}</TableCell>
-                <TableCell>{form.data}</TableCell>
+                <TableCell>{new Date(form.data).toISOString().split('T')[0].split('-').reverse().join('/')}</TableCell>
                 <TableCellActions>
                     <ActionButton onClick={() => handleViewRecord(form._id.$oid)}>
                       <FcSearch size={16} />

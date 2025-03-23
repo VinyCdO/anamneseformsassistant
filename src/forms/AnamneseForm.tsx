@@ -199,8 +199,10 @@ function AnamneseForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
-  const [dataNascimento, setDataNascimento] = useState(''); // Estado local para o campo de data
-  
+  const [dataNascimento, setDataNascimento] = useState('');
+  const [dataAtendimento, setDataAtendimento] = useState('');
+  const [navigateHome, setNavigateHome] = useState(false);
+
   useEffect(() => {
     const fetchAnamneseForm = async () => {      
       if (id) {
@@ -210,14 +212,29 @@ function AnamneseForm() {
           setFormData(data);
 
         if (data[0]?.dataNascimento) {
-          const formattedDate = new Date(data[0].dataNascimento).toLocaleDateString('pt-BR');
+          const formattedDate = new Date(data[0].dataNascimento).toISOString().split('T')[0].split('-').reverse().join('/');
           setDataNascimento(formattedDate);
+        }
+
+        if (data[0]?.data) {
+          const formattedDate = new Date(data[0].data).toISOString().split('T')[0].split('-').reverse().join('/');
+          setDataAtendimento(formattedDate);
         }
         } catch (error) {
           console.error("Error fetching anamnese form:", error);
         } finally {
           setIsLoading(false);
         }
+      } else {
+        handleRadioChange("lentesContato", false);
+        handleRadioChange("marcapasso", false);
+        handleRadioChange("epilepsia", false);
+        handleRadioChange("tabagista", false);
+        handleRadioChange("intestinoRegulado", false);
+        handleRadioChange("gestante", false);
+        handleRadioChange("alteracoesCardiacas", false);
+        handleRadioChange("pressaoAlta", false);
+        handleRadioChange("diabetes", false);         
       }
     };
 
@@ -226,16 +243,49 @@ function AnamneseForm() {
   
   const handleChange = (e: { target: { name: any; value: any; }; }) => {
     const { name, value } = e.target;
-
-    if (name === 'dataNascimento') {
-      setDataNascimento(value);
-    }
+    
+    const isValidDate = (date: string) => {
+      const regex = /^\d{2}\/\d{2}\/\d{4}$/; // Formato DD/MM/AAAA
+      return regex.test(date);
+    };
 
     const updatedFormData = [...formData];
     if (updatedFormData.length === 0) {
       updatedFormData.push({} as IAnamneseForm);
     }
-    updatedFormData[0] = { ...updatedFormData[0], [e.target.name]: e.target.value };
+    
+    if (name === 'data') {
+      const data = value; 
+      const [dia, mes, ano] = data.split('/');
+      
+      if (isValidDate(data)) {
+        const dataISO = new Date(`${ano}-${mes}-${dia}T00:00:00Z`);         
+        updatedFormData[0] = { ...updatedFormData[0], [e.target.name]: dataISO.toISOString() };
+      } else {
+        updatedFormData[0] = { ...updatedFormData[0], [e.target.name]: ''};
+      };
+
+      setDataAtendimento(value);      
+    }
+
+    if (name === 'dataNascimento') {
+      const data = value; 
+      const [dia, mes, ano] = data.split('/');
+      
+      if (isValidDate(data)) {
+        const dataISO = new Date(`${ano}-${mes}-${dia}T00:00:00Z`); 
+        updatedFormData[0] = { ...updatedFormData[0], [e.target.name]: dataISO.toISOString() };
+      } else {
+        updatedFormData[0] = { ...updatedFormData[0], [e.target.name]: ''};
+      };
+
+      setDataNascimento(value);      
+    }
+    
+    if (name !== 'data' && name !== 'dataNascimento') {
+      updatedFormData[0] = { ...updatedFormData[0], [e.target.name]: value };
+    }
+    
     setFormData(updatedFormData);
   };
 
@@ -249,20 +299,42 @@ function AnamneseForm() {
 
   const handleSave = async () => {
     try {        
+      const isValidDate = (date: string) => {
+        const regex = /^\d{2}\/\d{2}\/\d{4}$/; // Formato DD/MM/AAAA
+        return regex.test(date);
+      };
+      
+      if (!isValidDate(dataNascimento)) {
+        setModalMessage("Por favor, insira uma data de nascimento válida no formato DD/MM/AAAA.");
+        setShowModal(true);
+        setNavigateHome(false);
+        return;
+      }
+
+      if (!isValidDate(dataAtendimento)) {
+        setModalMessage("Por favor, insira uma data de atendiemento válida no formato DD/MM/AAAA.");
+        setShowModal(true);
+        setNavigateHome(false);
+        return;
+      }
+
       console.log(formData[0]);
       await postAnamneseForm(formData[0]);      
       
       setModalMessage('Ficha de Anamnese adicionada com sucesso.');
       setShowModal(true);
+      setNavigateHome(true);
     } catch(error) {        
       setModalMessage('Houve alguma falha ao adicionar a Ficha de Anamnese, tente novamente mais tarde.');
       setShowModal(true);
+      setNavigateHome(false);
     }    
   };
 
   const closeModal = () => {
     setShowModal(false);
-    handleNavigateHome();
+    if (navigateHome)     
+      handleNavigateHome();
   }
 
   if (isLoading) {
@@ -300,12 +372,12 @@ function AnamneseForm() {
       </FormLineTwoColumns>
       <FormLineFiveColumns> 
         <Label>Data de Nascimento:</Label>      
-        <Input 
+        <Input
           style={{ maxWidth: '150px' }} 
           name="dataNascimento" 
-          value={dataNascimento} // Usa o estado local para o valor do campo
+          value={dataNascimento} 
           onChange={handleChange}
-        />        
+        />
         <span></span>
         <Label>Telefone:</Label>
         
@@ -468,7 +540,7 @@ function AnamneseForm() {
             <FormColumn>              
                 {formData?.[0]?.data && (
                   <Label style={{ color: '#d6b128', fontSize: '1.5rem', margin: '0', textDecoration: 'underline' }}>
-                    {formData?.[0]?.data}
+                    {new Date(formData?.[0]?.data).toISOString().split('T')[0].split('-').reverse().join('/')}
                   </Label>      
                 )}
                 {!formData?.[0]?.data && (
@@ -476,7 +548,7 @@ function AnamneseForm() {
                     '____/_____/________'
                   </Label>      
                 )}              
-              <LabelRodape>Data</LabelRodape>        
+              <LabelRodape>Data Atendimento</LabelRodape>        
             </FormColumn>
             <FormColumn>
               <Label style={{ color: '#d6b128', fontSize: '1.5rem', margin: '0px 50px 0px 10px' }}>________________________________________________________________</Label>  
@@ -491,12 +563,12 @@ function AnamneseForm() {
           <span></span>
           <span></span>
           <Label>Data:</Label>      
-          <Input 
+          <Input
             style={{ maxWidth: '70px' }} 
             name="data" 
-            value={formData?.[0]?.data} 
-            onChange={handleChange} 
-          />                      
+            value={dataAtendimento} 
+            onChange={handleChange}
+          />          
           <div>
               <CancelButton key="cancel" onClick={handleNavigateHome}>
                 Cancelar
