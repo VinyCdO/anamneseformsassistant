@@ -79,7 +79,8 @@ const Input = styled.input`
   background-color: #fff;
   color: rgba(43, 41, 37, 0.56);
   margin-right: 20px;
-
+  min-width: max-content;
+  
   @media (max-width: 768px) {
     margin-top: 20px;
     margin-right: 0;
