@@ -42,14 +42,14 @@ const Header = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;    
-  padding: 20px 10px 10px 10px;    
-  height: min-content;
+  padding: 0px 10px 0 10px;    
+  height: 100px;
   width: 90vw;    
 
   @media (max-width: 768px) {
     flex-direction: column;
     height: auto;
-    gap: 5px;
+    padding-top: 20px;
   }  
 `;
 
@@ -64,6 +64,10 @@ const Divider = styled.hr`
   border-top: 2px solid #D4AF27; 
   margin: 15px 0;
   width: 90vw;
+
+  @media (max-width: 768px) {
+    margin: 0px;    
+  }
 `;
 
 const Input = styled.input`
@@ -74,9 +78,22 @@ const Input = styled.input`
   width: max(30%, 300px);
   background-color: #fff;
   color: rgba(43, 41, 37, 0.56);
+  margin-right: 20px;
 
   @media (max-width: 768px) {
     margin-top: 20px;
+    margin-right: 0;
+  }
+`;
+
+const Title = styled.h2`
+  font-size: 2rem;
+  color: #D4AF27;     
+  font-weight: 400;    
+  padding-top: 20px;  
+
+  @media (max-width: 768px) {
+    padding-top: 0px;    
   }
 `;
 
@@ -156,8 +173,65 @@ const ActionButton = styled.button`
   }
 `;
 
+const DivFilterArea = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;  
+
+  @media (max-width: 768px) {
+    margin-top: 20px;
+    flex-direction: column;    
+    wrap: wrap;
+  }
+`;
+
+const DivActionsArea = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const RadioButton = styled.input`
+  cursor: pointer;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(43, 41, 37, 0.56);
+  border-radius: 50%;
+  background-color: white;
+  outline: none;
+  cursor: pointer;
+
+  &:checked {
+    background-color: #D4AF27;
+    border-color: rgba(43, 41, 37, 0.56);
+  }
+
+  @media (max-width: 768px) {
+    margin-top: 20px;
+    margin-left: 20px;
+  }
+`;
+
+const Label = styled.label`
+  font-size: 0.8rem;
+  color:rgba(43, 41, 37, 0.56);   
+  font-weight: 600;
+  text-align: left;
+  display: inline-block;
+  min-width: max-content;
+  margin-right: 20px;
+  
+  @media (max-width: 768px) {
+    margin-top: 20px;
+    margin-right: 0;
+  }
+`;
+
 function Search () {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchName, setSearchName] = useState('');
+  const [searchDate, setSearchDate] = useState('');
+  const [searchFutureDates, setSearchFutureDates] = useState(false);
   const [anamneseForms, setAnamneseForms] = useState<IAnamneseForm[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -178,12 +252,22 @@ function Search () {
     fetchData();
   }, []);
 
-  const handleFilter = () => {    
+  const handleFilter = () => {        
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const data = await getAnamneseFormByName(searchTerm);
+        const data = await getAnamneseFormByName(searchName);
         setAnamneseForms(data);
+
+        if (searchDate) {
+          const selectedDate = new Date(searchDate);
+          const filteredForms = data.filter(
+            (form) => new Date(form.data) >= selectedDate              
+          );
+
+          setAnamneseForms(filteredForms);
+        }
+
       } finally {
         setIsLoading(false);
       }
@@ -225,6 +309,21 @@ function Search () {
     setModalVisible(false); 
     handleFilter();
   };
+
+  const handleChangeAtendimentosFuturos = () => {
+    setSearchFutureDates(!searchFutureDates);
+
+    if (!searchFutureDates) {
+      const currentDate = new Date().toISOString().split('T')[0];
+      setSearchDate(currentDate);
+      document.getElementById('filterDate')?.setAttribute('disabled', 'true');
+    } else {
+      setSearchDate('');
+      document.getElementById('filterDate')?.removeAttribute('disabled');
+    }
+
+    
+  }
   
   if (isLoading) {
     return (      
@@ -233,22 +332,39 @@ function Search () {
           <Logo
             src={businessLogo}
             alt="Logo Alice Ribeiro Estética"
-          />          
-          <Input
-            type="text"
-            placeholder="Digite o nome para pesquisa"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <div>
-            <Button onClick={handleFilter}>Filtrar</Button>
-            <Button onClick={handleNavAnamneseForm} style={{ marginLeft: '20px', backgroundColor: '#e8b8d1' }}>Nova</Button>
-          </div>
+          />        
+          <Title>PESQUISA</Title>            
         </Header>
 
         <Divider />
 
-        <img src="https://i.gifer.com/ZZ5H.gif" alt="Carregando..." style={{ width: '100px', height: '100px' }} />
+        <DivFilterArea>
+          <Input
+            type="text"
+            placeholder="Digite o nome para pesquisa"
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
+          />
+          <DivActionsArea>
+            <Input
+              type="date"
+              placeholder="Data inicial"
+              style={{ maxWidth: '115px' }}
+              value={searchDate}
+              onChange={(e) => setSearchDate(e.target.value)}
+            />          
+            <RadioButton type="checkbox" name="filterFutureDates" checked={searchFutureDates} onChange={() => handleChangeAtendimentosFuturos()} />
+            <Label>Atendimentos Futuros</Label>
+          </DivActionsArea>
+          <DivActionsArea>
+            <Button onClick={handleFilter}>Filtrar</Button>
+            <Button onClick={handleNavAnamneseForm} style={{ marginLeft: '20px', backgroundColor: '#e8b8d1' }}>Nova</Button>
+          </DivActionsArea>
+        </DivFilterArea>
+        
+        <DivFilterArea>
+          <img src="https://i.gifer.com/ZZ5H.gif" alt="Carregando..." style={{ width: '100px', height: '100px' }} />
+        </DivFilterArea>
       </Container>
     );
   }  
@@ -264,19 +380,35 @@ function Search () {
           src={businessLogo}
           alt="Logo Alice Ribeiro Estética"
         />
-        <Input
-          type="text"
-          placeholder="Digite o nome para pesquisa"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <div>
-          <Button onClick={handleFilter}>Filtrar</Button>
-          <Button onClick={handleNavAnamneseForm} style={{ marginLeft: '20px', backgroundColor: '#e8b8d1' }}>Nova</Button>
-        </div>
+        <Title>PESQUISA</Title>            
       </Header>
       
       <Divider />
+
+      <DivFilterArea>
+        <Input
+          type="text"
+          placeholder="Digite o nome para pesquisa"
+          value={searchName}
+          onChange={(e) => setSearchName(e.target.value)}
+        />
+        <DivActionsArea>
+          <Input
+            id='filterDate'
+            type="date"
+            placeholder="Data inicial"
+            style={{ maxWidth: '115px' }}
+            value={searchDate}
+            onChange={(e) => setSearchDate(e.target.value)}
+          />
+          <RadioButton type="checkbox" name="filterFutureDates" checked={searchFutureDates} onChange={() => handleChangeAtendimentosFuturos()} />
+          <Label>Atendimentos Futuros</Label>
+        </DivActionsArea>
+        <DivActionsArea>
+          <Button onClick={handleFilter}>Filtrar</Button>
+          <Button onClick={handleNavAnamneseForm} style={{ marginLeft: '20px', backgroundColor: '#e8b8d1' }}>Nova</Button>
+        </DivActionsArea>
+      </DivFilterArea>
 
       <ListContainer>
         <Table>
