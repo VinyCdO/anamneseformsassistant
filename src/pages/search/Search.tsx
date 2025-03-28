@@ -229,6 +229,16 @@ const Label = styled.label`
   }
 `;
 
+const LabelFilter = styled.label`
+  font-size: 0.8rem;
+  color:rgba(43, 41, 37, 0.56);   
+  font-weight: 600;
+  text-align: left;
+  display: inline-block;
+  min-width: max-content;
+  margin-top: 20px;  
+`;
+
 function Search () {
   const [searchName, setSearchName] = useState('');
   const [searchDate, setSearchDate] = useState('');
@@ -249,7 +259,7 @@ function Search () {
         setIsLoading(false);
       }
     };
-
+    
     fetchData();
   }, []);
 
@@ -321,10 +331,20 @@ function Search () {
     } else {
       setSearchDate('');
       document.getElementById('filterDate')?.removeAttribute('disabled');
-    }
-
-    
+    }    
   }
+
+  const handleSort = (criteria: 'name' | 'date') => {
+    const sortedForms = [...anamneseForms].sort((a, b) => {
+      if (criteria === 'name') {
+        return a.nome.localeCompare(b.nome); // Ordena por nome
+      } else if (criteria === 'date') {
+        return new Date(a.data).getTime() - new Date(b.data).getTime(); // Ordena por data
+      }
+      return 0;
+    });
+    setAnamneseForms(sortedForms);
+  };
   
   if (isLoading) {
     return (      
@@ -411,12 +431,14 @@ function Search () {
         </DivActionsArea>
       </DivFilterArea>
 
+      <LabelFilter>*Clique sobre os títulos das colunas para ordenar os registros</LabelFilter>
+
       <ListContainer>
         <Table>
           <thead>
             <tr>
-              <TableHeader>Nome</TableHeader>
-              <TableHeader>Data</TableHeader>
+              <TableHeader onClick={() => handleSort('name')} style={{ cursor: 'pointer' }}>Nome</TableHeader>
+              <TableHeader onClick={() => handleSort('date')} style={{ cursor: 'pointer' }}>Data</TableHeader>
               <TableHeader>Ações</TableHeader>
             </tr>
           </thead>
@@ -446,7 +468,7 @@ function Search () {
             ))}
           </tbody>
         </Table>
-      </ListContainer>
+      </ListContainer>        
 
       {modalVisible && selectedFormId && (
         <ModalAddForm
